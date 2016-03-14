@@ -1,0 +1,38 @@
+﻿Build started 14-Mar-16 6:50:28 PM.
+     1>Project "C:\Users\Jacob\Documents\GitHub\Compilation\Compilator\Compilator\Compilator.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt LinkedListFunctions.c TokenFunctions.c
+         TokenFunctions.c
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2081: 'List' : name in formal parameter list illegal
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2059: syntax error : ')'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2059: syntax error : 'type'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2059: syntax error : ')'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2059: syntax error : 'type'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2059: syntax error : ')'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(4): error C2011: 'Token' : 'struct' type redefinition
+                 c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(4) : see declaration of 'Token'
+         LinkedListFunctions.c
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2081: 'List' : name in formal parameter list illegal
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(11): error C2059: syntax error : ')'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2059: syntax error : 'type'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(12): error C2059: syntax error : ')'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2143: syntax error : missing ')' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2143: syntax error : missing '{' before '*'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2059: syntax error : 'type'
+     1>c:\users\jacob\documents\github\compilation\compilator\compilator\token.h(13): error C2059: syntax error : ')'
+         Generating Code...
+     1>Done Building Project "C:\Users\Jacob\Documents\GitHub\Compilation\Compilator\Compilator\Compilator.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.12
