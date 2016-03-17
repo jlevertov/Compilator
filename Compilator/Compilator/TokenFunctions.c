@@ -1,5 +1,6 @@
 #include "Token.h"
 #include"LinkedList.h"
+#include<stdlib.h>
 #include<string.h>
 
 void DefineTokenType(Token StringToCheck, char** KeyWordsArray, int NumOfKeyWords)
@@ -82,6 +83,20 @@ List_node* FindToken(List *TokensList, int* IndexCurrentToken)
 		{
 			temp = temp->next;
 		}
+
 		return temp;
 	}
+}
+
+bool CheckIsLegalAndStoreIfTrue(char* LexemeToCheck, int LineNumber, List *TokenList)
+{
+	//Is the first char is a letter
+	if ((LexemeToCheck[0] >= 'a' && LexemeToCheck[0] <= 'z') || 
+		(LexemeToCheck[0] >= 'A' && LexemeToCheck[0] <= 'Z'))
+	{
+		CreateAndStoreToken(LexemeToCheck, LineNumber, TokenList);
+		return true;
+	}
+
+	return false;
 }

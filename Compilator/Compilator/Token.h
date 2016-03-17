@@ -1,5 +1,5 @@
 #include<stdio.h>
-
+#include"LinkedList.h"
 typedef struct Token
 {
 	char* Type;
@@ -8,6 +8,7 @@ typedef struct Token
 }Token;
 
 void DefineTokenType(Token StringToCheck, char** KeyWordsArray, int NumOfKeyWords);
-void CreateAndStoreToken(char* Lexeme, int LineNumber, List *TokensList);
-Token NextToken(List *TokensList, int Size, int indexCurrentToken);
-Token BackToken(List *TokensList, int Size, int indexCurrentToken);
+void CreateAndStoreToken(char* Lexeme, int LineNumber,  List *TokensList);
+Token NextToken( List *TokensList, int Size, int indexCurrentToken);
+Token BackToken( List *TokensList, int Size, int indexCurrentToken);
+bool CheckIsLegalAndStoreIfTrue(char* LexemeToCheck, int LineNumber,  List *TokenList);

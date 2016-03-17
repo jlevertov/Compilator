@@ -1,0 +1,22 @@
+%{
+#include"Token.h"
+int Line = 1;
+List *TokenList;
+%}
+%%
+\n {Line++; CreateAndStoreToken(yytext, Line, TokenList);}
+ {if(CheckIsLegalAndStoreIfTrue(yytext, Line, TokenList))
+ {
+	printf("Added %s to the token list", yytext);
+ }
+ else
+ {
+	printf("SYNTAX ERROR");
+ }
+ }
+ %%
+ void main(int argc, char* argv[])
+ {
+	yyin = fopen("input.txt", "r");
+	yylex();
+ }

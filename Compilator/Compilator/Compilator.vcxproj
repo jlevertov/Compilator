@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LinkedListFunctions.c" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="TokenFunctions.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,14 +1,14 @@
 #include"LinkedList.h"
 
-List* Create_list()
+struct List* Create_list()
 {
-	List *list = (List*)calloc(1, sizeof(List));
+	 List *list = ( List*)calloc(1, sizeof(List));
 	list->size = 0;
 	return list;
 }
-void PushToEnd(List *l, Token TokenToAdd)
+void PushToEnd( List *l, void *TokenToAdd)
 {
-	List_node *node = (List_node*)calloc(1, sizeof(List_node));
+	 List_node *node = ( List_node*)calloc(1, sizeof( List_node));
 
 	node->data = TokenToAdd;
 	if (l->Last == NULL)
@@ -24,11 +24,11 @@ void PushToEnd(List *l, Token TokenToAdd)
 		l->size++;
 	}
 }
-int Size(List *l)
+int Size( List *l)
 {
 	return l->size;
 }
-bool IsEmpty(List *l)
+bool IsEmpty( List *l)
 {
 	return l->size == 0;
 }
