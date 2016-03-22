@@ -15,17 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Token.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TokenFunctions.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LinkedListFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
