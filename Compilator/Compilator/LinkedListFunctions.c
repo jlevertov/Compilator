@@ -1,12 +1,13 @@
 #include"LinkedList.h"
 #include<string.h>
 
-struct List* Create_list()
+List* Create_list()
 {
 	List *list = ( List*)calloc(1, sizeof(List));
 	list->size = 0;
 	return list;
 }
+
 void PushToEnd( List *l, Token *TokenToAdd)
 {
 	//if the list is empty;
@@ -41,10 +42,12 @@ void PushToEnd( List *l, Token *TokenToAdd)
 		}
 	}
 }
+
 int Size( List *l)
 {
 	return l->size;
 }
+
 bool IsEmpty( List *l)
 {
 	return l->size == 0;
