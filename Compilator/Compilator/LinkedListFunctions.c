@@ -3,200 +3,84 @@
 
 List* Create_list()
 {
-	List *list = ( List*)calloc(1, sizeof(List));
+	List_node *node;
+	List *list = (List*)calloc(1, sizeof(List));
 	list->size = 0;
+	node = (List_node*)malloc(sizeof(List_node));
+	node->CurrentArrayIndex = -1;
+	list->First = node;
+	list->Last = node;
 	return list;
 }
 
-void PushToEnd( List *l, Token *TokenToAdd)
+void PushToEnd(List *l, Token *TokenToAdd)
 {
 	//if the list is empty;
 	List_node *node;
-	if (l->Last == NULL && TokenToAdd != NULL)
+	/*if (l->Last == NULL && TokenToAdd != NULL)
+	{
+	node = (List_node*)malloc(sizeof(List_node));
+	node->CurrentArrayIndex = 0;
+	node->data[node->CurrentArrayIndex] = *TokenToAdd;
+	l->First = node;
+	l->Last = node;
+	}*/
+	//if the list is not empty and there is still place in the array
+
+	node = l->Last;
+	if (node->CurrentArrayIndex < 99)
+	{
+		node->CurrentArrayIndex++;
+		node->data[node->CurrentArrayIndex] = *TokenToAdd;
+	}
+	//Let's spend more memmory! :)
+	else
 	{
 		node = (List_node*)malloc(sizeof(List_node));
 		node->CurrentArrayIndex = 0;
 		node->data[node->CurrentArrayIndex] = *TokenToAdd;
-		l->First = node;
+		l->Last->next = node;
+		node->previous = l->Last;
 		l->Last = node;
-	}
-	//if the list is not empty and there is still place in the array
-	else
-	{
-		node = l->Last;
-		if (node->CurrentArrayIndex < 99)
-		{
-			node->CurrentArrayIndex++;
-			node->data[node->CurrentArrayIndex] = *TokenToAdd;
-		}
-		//Let's spend more memmory! :)
-		else
-		{
-			node = (List_node*)malloc(sizeof(List_node));
-			node->CurrentArrayIndex = 0;
-			node->data[node->CurrentArrayIndex] = *TokenToAdd;
-			l->Last->next = node;
-			node->previous = l->Last;
-			l->Last = node;
-			l->size++;
-		}
+		l->size++;
 	}
 }
-
-int Size( List *l)
+int Size(List *l)
 {
 	return l->size;
 }
-
-bool IsEmpty( List *l)
+bool IsEmpty(List *l)
 {
 	return l->size == 0;
 }
 
 //#Token Functions
 
-void DefineTokenType(Token *TokenToCheck)
+void DefineTokenType(Token *TokenToCheck, enum KeyWords key)
 {
-	int row, colum;
-	/*is keyword*/
-	if (TokenToCheck->Lexeme == "start")
-	{
-		TokenToCheck->Type = START;
-	}
-	else if (TokenToCheck->Lexeme == "end")
-	{
-		TokenToCheck->Type = END;
-	}
-	else if (TokenToCheck->Lexeme == "program")
-	{
-		TokenToCheck->Type = PROGRAM;
-	}
-	else if (TokenToCheck->Lexeme == "loop")
-	{
-		TokenToCheck->Type = LOOP;
-	}
-	else if (TokenToCheck->Lexeme == "until")
-	{
-		TokenToCheck->Type = UNTIL;
-	}
-	else if (TokenToCheck->Lexeme == "end_loop")
-	{
-		TokenToCheck->Type = END_LOOP;
-	}
-	else if (TokenToCheck->Lexeme == "if")
-	{
-		TokenToCheck->Type = IF;
-	}
-	else if (TokenToCheck->Lexeme == "end_if")
-	{
-		TokenToCheck->Type = END_IF;
-	}
-	else if (TokenToCheck->Lexeme == "else")
-	{
-		TokenToCheck->Type = ELSE;
-	}
-	else if (TokenToCheck->Lexeme == "int")
-	{
-		TokenToCheck->Type = INT;
-	}
-	else if (TokenToCheck->Lexeme == "real")
-	{
-		TokenToCheck->Type = REAL;
-	}
-	else if (TokenToCheck->Lexeme == "+")
-	{
-		TokenToCheck->Type = ADD_OP;
-	}
-	else if (TokenToCheck->Lexeme == "*")
-	{
-		TokenToCheck->Type = MUl_OP;
-	}
-	else if (TokenToCheck->Lexeme == ";")
-	{
-		TokenToCheck->Type = CMD_SEPERATOR;
-	}
-	else if (TokenToCheck->Lexeme == ",")
-	{
-		TokenToCheck->Type = COMMA;
-	}
-	else if (TokenToCheck->Lexeme == ":")
-	{
-		TokenToCheck->Type = COLON;
-	}
-	else if (TokenToCheck->Lexeme == "[")
-	{
-		TokenToCheck->Type = BRACKETS_OPEN;
-	}
-	else if (TokenToCheck->Lexeme == "]")
-	{
-		TokenToCheck->Type = BRACKETS_CLOSE;
-	}
-	else if (TokenToCheck->Lexeme == ">")
-	{
-		TokenToCheck->Type = BIGGER_THAN;
-	}
-	else if (TokenToCheck->Lexeme == "<")
-	{
-		TokenToCheck->Type = SMALLER_THAN;
-	}
-	else if (TokenToCheck->Lexeme == ">=")
-	{
-		TokenToCheck->Type = BIGGER_THAN_EQUALS;
-	}
-	else if (TokenToCheck->Lexeme == "<=")
-	{
-		TokenToCheck->Type = SMALLER_THAN_EQUALS;
-	}
-	else if (TokenToCheck->Lexeme == "==")
-	{
-		TokenToCheck->Type = EQUALS;
-	}
-	else if (TokenToCheck->Lexeme == "!=")
-	{
-		TokenToCheck->Type = NOT_EQUALS;
-	}
-	else if (TokenToCheck->Lexeme == "/*")
-	{
-		TokenToCheck->Type = COMMENT_START;
-	}
-	else if (TokenToCheck->Lexeme == "*/")
-	{
-		TokenToCheck->Type = COMMENT_END;
-	}
-	else if(!(TokenToCheck->Lexeme[0] >= '0' && TokenToCheck->Lexeme[0] < '9'))
-	{
-		TokenToCheck->Type = ID;
-	}
-	else //number
-	{
-		if (strstr(TokenToCheck->Lexeme, '.') != NULL)
-		{
-			TokenToCheck->Type = REAL_NUM;
-		}
-		else
-		{
-			TokenToCheck->Type = INT_NUM;
-		}
-	}
+	TokenToCheck->Type = key;
+
 }
 
-void CreateAndStoreToken(char* Lexeme, int LineNumber, List *TokensList)
+void CreateAndStoreToken(char* Lexeme, int *LineNumber, List *TokensList, enum KeyWords type)
 {
-	Token TokenToCreate;
-	TokenToCreate.Lexeme = Lexeme;
-	DefineTokenType(&TokenToCreate);
-	TokenToCreate.LineNumber = LineNumber;
-	TokenToCreate.I_AM_HERE = false;
-	if (TokenToCreate.Type == ID)
+	Token *TokenToCreate;
+	TokenToCreate = (Token*)calloc(1, sizeof(Token));
+	//TokenToCreate->Lexeme = Lexeme;
+	TokenToCreate->LineNumber = *LineNumber;
+	strcpy(TokenToCreate->Lexeme, Lexeme);
+	puts(TokenToCreate->Lexeme);
+	DefineTokenType(TokenToCreate, type);
+	TokenToCreate->I_AM_HERE = false;
+
+	if (CheckIsLegalIdToken(TokenToCreate->Lexeme, TokenToCreate->LineNumber))
 	{
-		if (CheckIsLegalIdToken(TokenToCreate.Lexeme, TokenToCreate.LineNumber))
-		{
-			PushToEnd(TokensList, &TokenToCreate);
-		}
-		else
-		{
-			printf("Syntax Error in line %d", TokenToCreate.LineNumber);
-		}
+		PushToEnd(TokensList, TokenToCreate);
+		//puts(TokensList->First->data[0].Lexeme);
+	}
+	else
+	{
+		printf("Syntax Error in line %d", TokenToCreate->LineNumber);
 	}
 }
 
@@ -211,7 +95,7 @@ Token NextToken(List *TokensList)
 	return nodeCurrentToken->data[indexCurrentToken + 1];
 }
 
-Token BackToken(List *TokensList, int* IndexCurrentToken)
+Token BackToken(List *TokensList)
 {
 	List_node *nodeCurrentToken;
 	int indexCurrentToken;
@@ -270,18 +154,20 @@ List_node *FindToken(List *TokensList, int *Index, bool Is_Next)
 
 		j++;
 	}
-	
+
 	return NULL;
 }
 
 bool CheckIsLegalIdToken(char* LexemeToCheck, int LineNumber)
 {
 	//Is the first char is a letter
+	char *p;
+	p = strstr(LexemeToCheck, "__");
 	if ((LexemeToCheck[0] >= 'a' && LexemeToCheck[0] <= 'z') ||
 		(LexemeToCheck[0] >= 'A' && LexemeToCheck[0] <= 'Z'))
 	{
-		if (strstr(LexemeToCheck,"__") && (LexemeToCheck[strlen(LexemeToCheck)] != '_'))
-		return true;
+		if (p == NULL && (LexemeToCheck[strlen(LexemeToCheck)] != '_'))
+			return true;
 	}
 
 	return false;

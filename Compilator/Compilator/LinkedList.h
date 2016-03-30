@@ -7,18 +7,18 @@
 
 typedef struct Token
 {
-	char* Type;
-	char* Lexeme;
+	enum KeyWords Type;
+	char Lexeme[50];
 	int LineNumber;
 	bool I_AM_HERE;
 }Token;
 
 typedef struct List_node
 {
-	 Token data[100];
-	 int CurrentArrayIndex;
-	 struct List_node *next;
-	 struct List_node *previous;
+	Token data[100];
+	int CurrentArrayIndex;
+	struct List_node *next;
+	struct List_node *previous;
 }List_node;
 
 typedef struct List
@@ -31,15 +31,15 @@ typedef struct List
 
 
 List* Create_list();
-bool IsEmpty( List *l);
-void PushToEnd( List *l, Token *TokenToAdd);
-int Size( List *l);
-struct List_node* FindToken( List* TokensList, int* Index, bool Is_Next);
+bool IsEmpty(List *l);
+void PushToEnd(List *l, Token *TokenToAdd);
+int Size(List *l);
+struct List_node* FindToken(List* TokensList, int* Index, bool Is_Next);
 
-void DefineTokenType(Token StringToCheck);
-void CreateAndStoreToken(char* Lexeme, int LineNumber, List *TokensList);
-Token NextToken(List *TokensList, int Size, int indexCurrentToken);
-Token BackToken(List *TokensList, int Size, int indexCurrentToken);
+void DefineTokenType(Token *TokenToCheck, enum KeyWords key);
+void CreateAndStoreToken(char* Lexeme, int *LineNumber, List *TokensList, enum KeyWords type);
+Token NextToken(List *TokensList);
+Token BackToken(List *TokensList);
 bool CheckIsLegalIdToken(char* LexemeToCheck, int LineNumber);
 
 enum KeyWords
