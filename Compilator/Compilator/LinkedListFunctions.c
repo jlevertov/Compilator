@@ -90,8 +90,16 @@ Token NextToken(List *TokensList)
 	int indexCurrentToken;
 	bool isNext = true;
 	nodeCurrentToken = FindToken(TokensList, &indexCurrentToken, isNext);
-	nodeCurrentToken->data[indexCurrentToken].I_AM_HERE = false;
-	nodeCurrentToken->data[indexCurrentToken + 1].I_AM_HERE = true;
+	if (indexCurrentToken < nodeCurrentToken->CurrentArrayIndex)
+	{
+		nodeCurrentToken->data[indexCurrentToken].I_AM_HERE = false;
+		nodeCurrentToken->data[indexCurrentToken + 1].I_AM_HERE = true;
+	}
+	else
+	{
+		yylex();
+	}
+
 	return nodeCurrentToken->data[indexCurrentToken + 1];
 }
 
