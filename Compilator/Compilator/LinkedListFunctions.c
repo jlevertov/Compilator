@@ -73,7 +73,7 @@ void CreateAndStoreToken(char* Lexeme, int *LineNumber, List *TokensList, enum K
 	DefineTokenType(TokenToCreate, type);
 	TokenToCreate->I_AM_HERE = false;
 
-	if (CheckIsLegalIdToken(TokenToCreate->Lexeme, TokenToCreate->LineNumber))
+	if (CheckIsLegalIdToken(TokenToCreate->Lexeme)
 	{
 		PushToEnd(TokensList, TokenToCreate);
 		//puts(TokensList->First->data[0].Lexeme);
@@ -166,7 +166,7 @@ List_node *FindToken(List *TokensList, int *Index, bool Is_Next)
 	return NULL;
 }
 
-bool CheckIsLegalIdToken(char* LexemeToCheck, int LineNumber)
+bool CheckIsLegalIdToken(char* LexemeToCheck)
 {
 	//Is the first char is a letter
 	char *p;
