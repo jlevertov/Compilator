@@ -1,4 +1,5 @@
 #include"LinkedList.h"
+#include<
 #include<string.h>
 
 List* Create_list()
@@ -32,6 +33,7 @@ void PushToEnd(List *l, Token *TokenToAdd)
 	{
 		node->CurrentArrayIndex++;
 		node->data[node->CurrentArrayIndex] = *TokenToAdd;
+		node->data[node->CurrentArrayIndex].I_AM_HERE = true;
 	}
 	//Let's spend more memmory! :)
 	else
@@ -39,6 +41,7 @@ void PushToEnd(List *l, Token *TokenToAdd)
 		node = (List_node*)malloc(sizeof(List_node));
 		node->CurrentArrayIndex = 0;
 		node->data[node->CurrentArrayIndex] = *TokenToAdd;
+		node->data[node->CurrentArrayIndex].I_AM_HERE = true;
 		l->Last->next = node;
 		node->previous = l->Last;
 		l->Last = node;
@@ -65,23 +68,24 @@ void DefineTokenType(Token *TokenToCheck, enum KeyWords key)
 void CreateAndStoreToken(char* Lexeme, int *LineNumber, List *TokensList, enum KeyWords type)
 {
 	Token *TokenToCreate;
-	TokenToCreate = (Token*)calloc(1, sizeof(Token));
-	//TokenToCreate->Lexeme = Lexeme;
-	TokenToCreate->LineNumber = *LineNumber;
-	strcpy(TokenToCreate->Lexeme, Lexeme);
-	puts(TokenToCreate->Lexeme);
-	DefineTokenType(TokenToCreate, type);
-	TokenToCreate->I_AM_HERE = false;
-
-	if (CheckIsLegalIdToken(TokenToCreate->Lexeme)
+	if (CheckIsLegalTokenSyntax(Lexeme))
 	{
+		TokenToCreate = (Token*)calloc(1, sizeof(Token));
+		//TokenToCreate->Lexeme = Lexeme;
+		TokenToCreate->LineNumber = *LineNumber;
+		strcpy(TokenToCreate->Lexeme, Lexeme);
+		puts(TokenToCreate->Lexeme);
+		DefineTokenType(TokenToCreate, type);
+		TokenToCreate->I_AM_HERE = false;
 		PushToEnd(TokensList, TokenToCreate);
 		//puts(TokensList->First->data[0].Lexeme);
 	}
 	else
 	{
 		printf("Syntax Error in line %d", TokenToCreate->LineNumber);
+		return;
 	}
+	
 }
 
 Token NextToken(List *TokensList)
@@ -94,13 +98,15 @@ Token NextToken(List *TokensList)
 	{
 		nodeCurrentToken->data[indexCurrentToken].I_AM_HERE = false;
 		nodeCurrentToken->data[indexCurrentToken + 1].I_AM_HERE = true;
+		return nodeCurrentToken->data[indexCurrentToken + 1];
 	}
+
 	else
 	{
 		yylex();
 	}
 
-	return nodeCurrentToken->data[indexCurrentToken + 1];
+	
 }
 
 Token BackToken(List *TokensList)
@@ -166,7 +172,7 @@ List_node *FindToken(List *TokensList, int *Index, bool Is_Next)
 	return NULL;
 }
 
-bool CheckIsLegalIdToken(char* LexemeToCheck)
+bool CheckIsLegalTokenSyntax(char* LexemeToCheck)
 {
 	//Is the first char is a letter
 	char *p;
