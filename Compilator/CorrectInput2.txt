@@ -1,0 +1,6 @@
+/*commen1*/
+program
+x[3],y,z:integer;
+r:real;
+x[2]=3; y=x+4
+end

@@ -1,0 +1,6 @@
+program
+x,y,z:integer;
+r:real;
+x=3; y=x+4;
+if x>2 then z=5 else r=1.2 end_if
+end

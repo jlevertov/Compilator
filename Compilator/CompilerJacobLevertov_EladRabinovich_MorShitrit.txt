@@ -1,0 +1,103 @@
+%{
+#include "Functions.c"
+#include "Parser.c"
+int LineNumber = 1;
+int wasAtNextToken = 0;
+List *TokenList;
+%}
+%name lex
+DIGIT    [0-9]
+ID      [a-zA-Z][a-zA-Z0-9]*([_]?[a-zA-Z0-9]+)*
+ERRID [a-zA-Z][a-zA-Z0-9]*([_]?[a-zA-Z0-9]+)*([_]+[_]+[a-zA-Z0-9]+)*
+%%
+\n {LineNumber++;}
+integer {CreateAndStoreToken(yytext,LineNumber, TokenList, INT);}
+real {CreateAndStoreToken(yytext, LineNumber, TokenList, REAL); }
+program {CreateAndStoreToken(yytext, LineNumber, TokenList, PROGRAM);}
+end {CreateAndStoreToken(yytext, LineNumber, TokenList, END); }
+start {CreateAndStoreToken(yytext, LineNumber, TokenList, START); }
+loop {CreateAndStoreToken(yytext, LineNumber, TokenList, LOOP); }
+until {CreateAndStoreToken(yytext, LineNumber, TokenList, UNTIL); }
+end_loop {CreateAndStoreToken(yytext, LineNumber, TokenList, END_LOOP); }
+if {CreateAndStoreToken(yytext, LineNumber, TokenList, IF); }
+else {CreateAndStoreToken(yytext, LineNumber, TokenList, ELSE); }
+end_if {CreateAndStoreToken(yytext, LineNumber, TokenList, END_IF); }
+then {CreateAndStoreToken(yytext, LineNumber, TokenList, THEN); }
+\+ {CreateAndStoreToken(yytext, LineNumber, TokenList, ADD_OP); }
+\* {CreateAndStoreToken(yytext, LineNumber, TokenList, MUL_OP); }
+\= {CreateAndStoreToken(yytext, LineNumber, TokenList, INSERTION); }
+\; {CreateAndStoreToken(yytext, LineNumber, TokenList, CMD_SEPERATOR); }
+\, {CreateAndStoreToken(yytext, LineNumber, TokenList, COMMA); }
+\: {CreateAndStoreToken(yytext, LineNumber, TokenList, COLON); }
+\> {CreateAndStoreToken(yytext, LineNumber, TokenList, BIGGER_THAN); }
+\< {CreateAndStoreToken(yytext, LineNumber, TokenList, SMALLER_THAN); }
+\=\= {CreateAndStoreToken(yytext, LineNumber, TokenList, EQUALS); }
+\!\= {CreateAndStoreToken(yytext, LineNumber, TokenList, NOT_EQUALS); }
+\>\= {CreateAndStoreToken(yytext, LineNumber, TokenList, BIGGER_THAN_EQUALS); }
+\<\= {CreateAndStoreToken(yytext, LineNumber, TokenList, SMALLER_THAN_EQUALS); }
+\/\* {CreateAndStoreToken(yytext, LineNumber, TokenList, COMMENT_START); }
+\*\/ {CreateAndStoreToken(yytext, LineNumber, TokenList, COMMENT_END); }
+\[ {CreateAndStoreToken(yytext, LineNumber, TokenList, BRACKETS_OPEN); }
+\] {CreateAndStoreToken(yytext, LineNumber, TokenList, BRACKETS_CLOSE); }
+([a-zA-Z]+[0-9]*([_]*[a-zA-Z0-9]+)*)+ {CreateAndStoreToken(yytext, LineNumber, TokenList, ID); }
+{ID} {CreateAndStoreToken(yytext, LineNumber, TokenList, ID); }
+"_"{ID} {CreateAndStoreToken(yytext, LineNumber, TokenList, ERROR); }
+{ID}+"_" {CreateAndStoreToken(yytext, LineNumber, TokenList, ERROR); }
+{ERRID} {CreateAndStoreToken(yytext, LineNumber, TokenList, ERROR); }
+[0-9]+{ID} {CreateAndStoreToken(yytext, LineNumber, TokenList, ERROR); }
+[1-9][0-9]* {CreateAndStoreToken(yytext, LineNumber, TokenList, INT_NUM); }
+0 {CreateAndStoreToken(yytext, LineNumber, TokenList, INT_NUM); }
+([0-9]*\.[0-9]+|[0-9]*) {CreateAndStoreToken(yytext, LineNumber, TokenList, REAL_NUM); }
+<<EOF>> {CreateAndStoreToken("END", LineNumber, TokenList, EOF_); return 0;}
+%%
+
+void main (int argc, char* argv[])
+{	
+	TokenList = Create_list();
+	List_node *currentNode = TokenList->First;
+	int i = 0;
+	yyin = fopen(argv[1], "r");
+	NextToken(TokenList);
+	currentNode  = TokenList->First;
+	while(currentNode->data[i].Type != EOF_)
+	{
+		printf("Lexeme: %s, LineNumber: %d, Type: %d \n", currentNode->data[i].Lexeme, currentNode->data[i].LineNumber, currentNode->data[i].Type);
+		i++;
+	}
+	TokenList->Last->data[TokenList->Last->CurrentArrayIndex].I_AM_HERE = false;
+	TokenList->First->data[0].I_AM_HERE = true;
+	i =0;
+	printf("--------------------------------------------------------------\n");
+	Parse_Program(TokenList);
+	free(TokenList);
+}
+
+Token NextToken(List *TokensList)
+{ 
+	List_node *nodeCurrentToken = NULL;
+	int indexCurrentToken= 0;
+	bool isNext = true;
+	
+	if(wasAtNextToken == 1)
+	{
+		nodeCurrentToken = FindToken(TokensList, &indexCurrentToken, isNext);
+		if (TokenList->First->data[0].Lexeme != "" && nodeCurrentToken != NULL && indexCurrentToken <= nodeCurrentToken->CurrentArrayIndex)
+		{
+			nodeCurrentToken->data[indexCurrentToken].I_AM_HERE = false;
+			nodeCurrentToken->data[indexCurrentToken + 1].I_AM_HERE = true;
+			return nodeCurrentToken->data[indexCurrentToken + 1];
+		}
+	}
+	else
+	{
+		yylex();
+		wasAtNextToken = 1;
+	}
+	Token *t = (Token*)malloc(sizeof(Token));
+	strcpy(t->Lexeme, "End Of Tokens");
+	t->LineNumber = -1;
+	t->Type = ERROR;
+	return *t;
+}
+
+	
