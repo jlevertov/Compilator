@@ -10,6 +10,14 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="header.h" />
+    <ClInclude Include="Parser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Functions.c" />
+    <ClCompile Include="Parser.c" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FF3F3C7C-0A25-4679-A625-03B8099CA9C2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -77,15 +85,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="LinkedList.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="LinkedListFunctions.c" />
-    <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

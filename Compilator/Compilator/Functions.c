@@ -59,14 +59,14 @@ void CreateAndStoreToken(char* Lexeme, int LineNumber, List *TokensList, enum Ke
 	//TokenToCreate->Lexeme = Lexeme;
 	TokenToCreate->LineNumber = LineNumber;
 	strcpy(TokenToCreate->Lexeme, Lexeme);
-	TokenToCreate->Type = type;
+	TokenToCreate->Kind = type;
 	TokenToCreate->I_AM_HERE = false;
 	puts(Lexeme);
-	if(TokenToCreate->Type == ERROR)
+	if(TokenToCreate->Kind == ERROR)
 	{
 		printf("Syntax Error in line %d\n", TokenToCreate->LineNumber);
 	}
-	else if(TokenToCreate->Type == ID)
+	else if(TokenToCreate->Kind == ID)
 	{
 		if (CheckIsLegalIdToken(TokenToCreate->Lexeme) == true)
 		{
@@ -103,7 +103,7 @@ Token BackToken(List *TokensList)
 		t = (Token*)malloc(sizeof(Token));
 		strcpy(t->Lexeme, "End Of Tokens");
 		t->LineNumber = -1;
-		t->Type = ERROR;
+		t->Kind = ERROR;
 		return *t;
 	}
 }

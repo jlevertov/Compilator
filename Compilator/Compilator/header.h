@@ -7,7 +7,7 @@
 
 typedef struct Token
 {
-	enum KeyWords Type;
+	enum KeyWords Kind;
 	char Lexeme[50];
 	int LineNumber;
 	bool I_AM_HERE;

@@ -3,21 +3,22 @@
 
 static Token t;
 static bool wasError = false;
+static List* tokenList;
 
-void Parse_Program(List* tokenList)
+void Parse_Program(List* TokenList)
 {
-	
+	tokenList = TokenList;
 	t = tokenList->First->data[0];
-	if(t.Type == COMMENT_START) //If there is a comment
+	if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			t = NextToken(tokenList);
 		}
 		printf("\n%s\n", t.Lexeme);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case PROGRAM:
 		Parse_Declerations(tokenList);
@@ -26,7 +27,7 @@ void Parse_Program(List* tokenList)
 		printf("\nProgram->Declerations->;");
 		Parse_Statements(tokenList);
 		printf("\nProgram->Declerations->;->Statemants");
-		/*if(t.Type != EOF_)*/
+		/*if(t.Kind != EOF_)*/
 			//t = NextToken(tokenList);
 		match(t.Lexeme, "end");
 		printf("\nProgram->Declerations->;->Statemants->end");
@@ -42,29 +43,29 @@ void Parse_Program(List* tokenList)
 	default:
 			printf("\n-----------------\nParser Error at %s, expected program, line %d\n", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file\n");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token\n");
 			}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Declerations(List* tokenList)
+void Parse_Declerations()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case INT_NUM:
 	case ID:
@@ -74,22 +75,22 @@ void Parse_Declerations(List* tokenList)
 		match(t.Lexeme, ";");
 		printf("\nDeclerations->Decleration->;");
 		t = NextToken(tokenList);
-		if (t.Type == IF || t.Type == LOOP || t.Type == START) //Finished Decleration starting Statemants
+		if (t.Kind == IF || t.Kind == LOOP || t.Kind == START) //Finished Decleration starting Statemants
 		{
 			t = BackToken(tokenList);
 		}
-		else if (t.Type == INT_NUM)
+		else if (t.Kind == INT_NUM)
 		{
 			t = BackToken(tokenList);
 			t = BackToken(tokenList);
 			Parse_Decleration_T(tokenList);
 			printf("\nDeclerations->Decleration->;->Decleration_Tag");
 		}
-		else if (t.Type == ID)
+		else if (t.Kind == ID)
 		{
 			t = NextToken(tokenList);
 			
-			if (t.Type == COMMA || t.Type == COLON)
+			if (t.Kind == COMMA || t.Kind == COLON)
 			{
 				t = BackToken(tokenList);
 				t = BackToken(tokenList);
@@ -97,16 +98,16 @@ void Parse_Declerations(List* tokenList)
 				Parse_Decleration_T(tokenList);
 				printf("\nDeclerations->Decleration->;->Decleration_Tag");
 			}
-			else if (t.Type == BRACKETS_OPEN)
+			else if (t.Kind == BRACKETS_OPEN)
 			{
 				int i = 1;
-				while (t.Type != INSERTION && t.Type != COLON)
+				while (t.Kind != INSERTION && t.Kind != COLON)
 				{
 					t = NextToken(tokenList);
 					i++;
 				}
 
-				if (t.Type == INSERTION)
+				if (t.Kind == INSERTION)
 				{
 					while (i > 0)
 					{
@@ -116,7 +117,7 @@ void Parse_Declerations(List* tokenList)
 					
 					t = BackToken(tokenList);
 				}
-				else if (t.Type == COLON)
+				else if (t.Kind == COLON)
 				{
 					while (i > 0)
 					{
@@ -128,7 +129,7 @@ void Parse_Declerations(List* tokenList)
 					printf("\nDeclerations->Decleration->;->Decleration_Tag");
 				}
 			}
-			else if (t.Type == INSERTION)
+			else if (t.Kind == INSERTION)
 			{
 				t = BackToken(tokenList);
 				t = BackToken(tokenList);
@@ -141,9 +142,9 @@ void Parse_Declerations(List* tokenList)
 		break; //End of cases INT_NUM, ID
 
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -153,47 +154,75 @@ void Parse_Declerations(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected id or an int number, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != CMD_SEPERATOR && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Decleration(List* tokenList)
+void Parse_Decleration()
 {
+	Token currentToken;
+	Attribute VS_type, T_type;
 	t = NextToken(tokenList);
-	switch (t.Type)
+	currentToken = t;
+	while (t.Kind != COLON && t.Kind!=EOF_)
+	{
+		t = NextToken(tokenList);
+	}
+	if (t.Kind == EOF_)
+	{
+		printf("\nUnexpected end of file");
+		exit(1);
+	} 
+	//else
+	T_type = Parse_Type();
+	VS_type = T_type;
+	while (&t != &currentToken) //maybe will work
+	{
+		t = BackToken(tokenList);
+	}
+	switch (t.Kind)
 	{
 	case INT_NUM:
 	case ID:
 		t = BackToken(tokenList);
-		Parse_Variables_List(tokenList);
+		Parse_Variables_List(VS_type);
 		printf("\nDecleration->Variables_List");
 		match(t.Lexeme, ":");
 		printf("\nDecleration->Variables_List->:");
-		Parse_Type(tokenList);
-		t = NextToken(tokenList);
-		printf("\nDecleration->Variables_List->:->Type");
+		// Parse_Type(); in order to solve the problem of inherited from T to VS
+		//t = NextToken(tokenList);
+		while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_)
+		{
+			t = NextToken(tokenList);
+		}
+		if (t.Kind == EOF_)
+		{
+			printf("\nUnexpected end of file");
+			exit(1);
+		}
+		printf("\nDecleration->Variables_List->:->Kind");
 		match(t.Lexeme, ";");
-		printf("\nDecleration->Variables_List->:->Type->;");
+		printf("\nDecleration->Variables_List->:->Kind->;");
 		break; //End of cases INT_NUM, ID
 	default:
-	if(t.Type == COMMENT_START) //If there is a comment
+	if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -204,39 +233,39 @@ void Parse_Decleration(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected an id or an int number, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != CMD_SEPERATOR && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Decleration_T(List* tokenList)
+void Parse_Decleration_T()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case CMD_SEPERATOR:
 		Parse_Declerations(tokenList);
 		printf("\nDecleration_Tag->Decleration");
 		break; //End of case CMD_SEPERATOR
 	default:
-	if(t.Type == COMMENT_START) //If there is a comment
+	if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -247,83 +276,90 @@ void Parse_Decleration_T(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected ;, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != CMD_SEPERATOR && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		break; // End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Type(List* tokenList)
+Attribute Parse_Type()
 {
+	Attribute T_Type;
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
-	case INT:
+	case INT: 
 	case REAL:
-		printf("\nType->Integer|Real");
+		printf("\nKind->Integer|Real");
+		T_Type.type = t.Kind;
 		break; //End of cases INT, REAL
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Type(tokenList);
+			Parse_Kind(tokenList);
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected 'integer' or 'real', line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != CMD_SEPERATOR && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
+
+	return T_Type;
 }
 
-void Parse_Variables_List(List* tokenList)
+void Parse_Variables_List(Attribute VS_type)
 {
+	Attribute V_type, VS_T_type;
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case ID:
 	case INT_NUM:
 		t = BackToken(tokenList);
-		Parse_Variable(tokenList);
+		V_type = VS_type;
+		VS_T_type = VS_type;
+		Parse_Variable(V_type);
 		printf("\nVariables_List->Variable");
 		t = NextToken(tokenList);
-		 if (t.Type == COMMA)
+		 if (t.Kind == COMMA)
 		{
 			t = BackToken(tokenList);
-			Parse_Variables_List_T(tokenList);
+			Parse_Variables_List_T(VS_T_type);
 			printf("Varialbles_List->Variable->,->Variables_List_Tag");
 		}
 		printf("\nVariables_List->Variable->,->Variables_List_Tag->:");
@@ -332,96 +368,100 @@ void Parse_Variables_List(List* tokenList)
 		match(t.Lexeme, ":");
 		break; //End of cases ID, INT_NUM
 	default:
-	if(t.Type == COMMENT_START) //If there is a comment
+	if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Variables_List(tokenList);
+			Parse_Variables_List(VS_T_type);
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected id or an int number , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != COLON && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != COLON && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Variables_List_T(List* tokenList)
+void Parse_Variables_List_T(Attribute VS_T_type)
 {
+	Attribute V_type, VS_T_R_type;
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case COMMA:
-		Parse_Variable(tokenList);
+		V_type = VS_T_type;
+		Parse_Variable(V_type);
 		printf("\nVariables_List_Tag->Variable");
 		t = NextToken(tokenList);
-		if (t.Type == COMMA)
+		if (t.Kind == COMMA)
 		{
 			t = BackToken(tokenList);
-			Parse_Variables_List_T(tokenList);
+			VS_T_R_type = VS_T_type;
+			Parse_Variables_List_T(VS_T_R_type);
 			printf("\nVariables_List_Tag->Variable->,->Variables_List_Tag");
 		}
-		else if(t.Type != COLON)
+		else if(t.Kind != COLON)
 		{
 			wasError = true;
 		}
 		break; //End of case COMMA
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
-			
-			Parse_Variables_List_T(tokenList);
+			VS_T_R_type = VS_T_type;
+			Parse_Variables_List_T(VS_T_R_type);
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected ',', line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != COLON && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != COLON && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Variable(List* tokenList)
+void Parse_Variable(Attribute V_type)
 {
+	Attribute v;
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case INT_NUM:
 		printf("\nVariable->Number");
@@ -429,14 +469,14 @@ void Parse_Variable(List* tokenList)
 	case ID:
 		t = NextToken(tokenList);
 		printf("\nVariable->id");
-		if (t.Type == COMMA || t.Type == COLON)
+		if (t.Kind == COMMA || t.Kind == COLON)
 		{
 			t = BackToken(tokenList);
 		}
-		else if (t.Type == BRACKETS_OPEN)
+		else if (t.Kind == BRACKETS_OPEN)
 		{
 			t = BackToken(tokenList);
-			Parse_Variable_T(tokenList);
+			Parse_Variable_T();
 			printf("\nVariable->id->Variable_Tag");
 		}
 		else
@@ -446,48 +486,48 @@ void Parse_Variable(List* tokenList)
 
 		break; //End of case ID
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Variable(tokenList);
+			Parse_Variable();
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected an int num or an id, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != COMMA && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != COMMA && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Variable_T(List* tokenList)
+void Parse_Variable_T(Attribute V_type)
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case BRACKETS_OPEN:
 		t = NextToken(tokenList);
 		printf("Variable_Tag->[");
-		if (t.Type == INT_NUM)
+		if (t.Kind == INT_NUM)
 		{
 			t = NextToken(tokenList);
 			match(t.Lexeme, "]");
@@ -496,43 +536,43 @@ void Parse_Variable_T(List* tokenList)
 
 		break; //End of case BRACKETS_OPEN
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Variable_T(tokenList);
+			Parse_Variable_T();
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected [ , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != COMMA && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != COMMA && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Statements(List* tokenList)
+void Parse_Statements()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case IF:
 	case LOOP:
@@ -542,7 +582,7 @@ void Parse_Statements(List* tokenList)
 		Parse_Statement(tokenList);
 		printf("\nStatements->Statemant");
 		//t = NextToken(tokenList);
-		if (t.Type == CMD_SEPERATOR)
+		if (t.Kind == CMD_SEPERATOR)
 		{
 			t = BackToken(tokenList);
 			Parse_Statements_T(tokenList);
@@ -554,9 +594,9 @@ void Parse_Statements(List* tokenList)
 		break; //End of cases IF, LOOP, START, ID
 
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -567,32 +607,32 @@ void Parse_Statements(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected if or loop or start or id, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != END && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != END && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Statements_T(List* tokenList)
+void Parse_Statements_T()
 {
 	t = NextToken(tokenList);
 	//match(t.Lexeme, ";");
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case IF:
 	case LOOP:
@@ -605,9 +645,9 @@ void Parse_Statements_T(List* tokenList)
 		printf("\nStatements_Tag->Statemants->end");
 		break; //End of cases IF, LOOP, START, ID
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -618,30 +658,30 @@ void Parse_Statements_T(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected if or loop or start or id, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;	  
-			while (t.Type != END && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != END && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Statement(List* tokenList)
+void Parse_Statement()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case IF:
 		Parse_Condition(tokenList);
@@ -684,9 +724,9 @@ void Parse_Statement(List* tokenList)
 		
 		break; //End of case ID
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -697,38 +737,38 @@ void Parse_Statement(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected if or loop or start or id, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != END_IF && t.Type != UNTIL && t.Type != END && t.Type != CMD_SEPERATOR  && t.Type != ELSE && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != END_IF && t.Kind != UNTIL && t.Kind != END && t.Kind != CMD_SEPERATOR  && t.Kind != ELSE && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Receiver(List* tokenList)
+Attribute Parse_Receiver()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case ID:
 		t = NextToken(tokenList);
 		printf("\nReceiver->id");
-		if (t.Type == BRACKETS_OPEN)
+		if (t.Kind == BRACKETS_OPEN)
 		{
 			t = BackToken(tokenList);
-			Parse_Receiver_T(tokenList);
+			Parse_Receiver_T();
 			t = NextToken(tokenList);
 			printf("\nReceiver->id->Receiver_Tag");
 		}
@@ -737,9 +777,9 @@ void Parse_Receiver(List* tokenList)
 		printf("\n|Receiver->id->=");
 		break; //End of case ID
 	default:
-	if(t.Type == COMMENT_START) //If there is a comment
+	if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -750,30 +790,30 @@ void Parse_Receiver(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected an id, line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != EQUALS && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != EQUALS && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Receiver_T(List* tokenList)
+void Parse_Receiver_T(Attribute R_T_type)
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case BRACKETS_OPEN:
 		Parse_Expression(tokenList);
@@ -781,42 +821,42 @@ void Parse_Receiver_T(List* tokenList)
 		printf("\nReceiver_Tag->[->Expression->]");
 		break; //End of case BRACKETS_OPEN
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Receiver_T(tokenList);
+			Parse_Receiver_T();
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected [ , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != INSERTION && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != INSERTION && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Expression(List* tokenList)
+Attribute Parse_Expression()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case INT_NUM:
 	case REAL_NUM:
@@ -825,50 +865,50 @@ void Parse_Expression(List* tokenList)
 		break; //End of case INT_NUM, REAL_NUM
 	case ID:				
 		t = NextToken(tokenList);
-		if (t.Type == BRACKETS_OPEN ||
-			t.Type == ADD_OP ||
-			t.Type == MUL_OP)
+		if (t.Kind == BRACKETS_OPEN ||
+			t.Kind == ADD_OP ||
+			t.Kind == MUL_OP)
 		{
 			t = BackToken(tokenList);
-			Parse_Expression_T(tokenList);
+			Parse_Expression_T();
 			printf("\nExpression->id->[|+|*->Expression_Tag");
 		}
 		break; //End of case ID
 
 		
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Expression(tokenList);
+			Parse_Expression();
 		}
 		else
 		{
 			printf("\n-----------------\nParser Error at %s, expected a number or an id , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != BRACKETS_CLOSE && t.Type != REAL_NUM && t.Type != CMD_SEPERATOR && t.Type != END_IF && t.Type != ELSE && t.Type != END && t.Type != UNTIL && t.Type != EOF_
-				&& t.Type != BIGGER_THAN && t.Type != SMALLER_THAN && t.Type != BIGGER_THAN_EQUALS && t.Type != SMALLER_THAN_EQUALS && t.Type != EQUALS && t.Type != NOT_EQUALS && t.Type != ERROR)
+			while (t.Kind != BRACKETS_CLOSE && t.Kind != REAL_NUM && t.Kind != CMD_SEPERATOR && t.Kind != END_IF && t.Kind != ELSE && t.Kind != END && t.Kind != UNTIL && t.Kind != EOF_
+				&& t.Kind != BIGGER_THAN && t.Kind != SMALLER_THAN && t.Kind != BIGGER_THAN_EQUALS && t.Kind != SMALLER_THAN_EQUALS && t.Kind != EQUALS && t.Kind != NOT_EQUALS && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End if default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 
 	if (!(MultiMatch(t.Lexeme, "]") ||
 		MultiMatch(t.Lexeme, ";") ||
@@ -889,10 +929,10 @@ void Parse_Expression(List* tokenList)
 	}
 }
 
-void Parse_Expression_T(List* tokenList)
+void Parse_Expression_T(Attribute E_T_type)
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case BRACKETS_OPEN:
 		Parse_Expression(tokenList);
@@ -921,42 +961,42 @@ void Parse_Expression_T(List* tokenList)
 		}
 		break; //End of case ADD_OP, MUL_OP
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Expression_T(tokenList);
+			Parse_Expression_T();
 		}
 		else
 		{	
 			printf("\n-----------------\nParser Error at %s, expected + or * or [ , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != BRACKETS_CLOSE && t.Type != CMD_SEPERATOR && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != BRACKETS_CLOSE && t.Kind != CMD_SEPERATOR && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if (t.Type == ERROR)
+			else if (t.Kind == ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 		break; //End of default case
-	} //End of switch (t.Type)
+	} //End of switch (t.Kind)
 }
 
-void Parse_Condition(List* tokenList)
+void Parse_Condition()
 {
 	t = NextToken(tokenList);
-	switch (t.Type)
+	switch (t.Kind)
 	{
 	case INT_NUM:
 	case REAL_NUM:
@@ -987,9 +1027,9 @@ void Parse_Condition(List* tokenList)
 		}			
 		break; // End of case INT_NUM, REAL_NUM, ID
 	default:
-		if(t.Type == COMMENT_START) //If there is a comment
+		if(t.Kind == COMMENT_START) //If there is a comment
 		{
-			while(t.Type != COMMENT_END)
+			while(t.Kind != COMMENT_END)
 			{
 				t = NextToken(tokenList);
 			}
@@ -1000,24 +1040,24 @@ void Parse_Condition(List* tokenList)
 		{
 			printf("\n-----------------\nParser Error at %s, expected a number or an id , line %d", t.Lexeme, t.LineNumber);
 			wasError = true;
-			while (t.Type != THEN && t.Type != END_LOOP && t.Type != EOF_ && t.Type != ERROR)
+			while (t.Kind != THEN && t.Kind != END_LOOP && t.Kind != EOF_ && t.Kind != ERROR)
 			{
 				t = NextToken(tokenList);
 			}
 
-			if (t.Type == EOF_)
+			if (t.Kind == EOF_)
 			{
 				printf("\nUnexpected end of file");
 				exit(1);
 			}
-			else if(t.Type != ERROR)
+			else if(t.Kind != ERROR)
 			{
 				printf("\nNo Token");
 			}
 		}
 
 		break; //End of default case
-	} //End of switch(t.Type)
+	} //End of switch(t.Kind)
 
 }
 
