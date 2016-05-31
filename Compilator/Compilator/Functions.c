@@ -1,6 +1,8 @@
 #include"header.h"
 #include<string.h>
 
+static int KEY = 0;
+
 List* Create_list()
 {
 	List_node *node;
@@ -62,6 +64,7 @@ void CreateAndStoreToken(char* Lexeme, int LineNumber, List *TokensList, enum Ke
 	TokenToCreate->Kind = type;
 	TokenToCreate->I_AM_HERE = false;
 	puts(Lexeme);
+	TokenToCreate->key = KEY++;
 	if(TokenToCreate->Kind == ERROR)
 	{
 		printf("Syntax Error in line %d\n", TokenToCreate->LineNumber);

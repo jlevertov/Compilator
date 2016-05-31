@@ -1,12 +1,18 @@
 #include "Parser.h"
 #include <string.h>
+#define SIZE 1000
 
 static Token t;
 static bool wasError = false;
 static List* tokenList;
+static Table* currentHashTable;
+static int keysForType[20];
+static int INDEX = 0;
 
 void Parse_Program(List* TokenList)
 {
+	Table* rootHashTable = (Table*)malloc(sizeof(Table));
+	currentHashTable = rootHashTable;
 	tokenList = TokenList;
 	t = tokenList->First->data[0];
 	if(t.Kind == COMMENT_START) //If there is a comment
@@ -175,46 +181,23 @@ void Parse_Declerations()
 
 void Parse_Decleration()
 {
-	Token currentToken;
 	Attribute VS_type, T_type;
 	t = NextToken(tokenList);
-	currentToken = t;
-	while (t.Kind != COLON && t.Kind!=EOF_)
-	{
-		t = NextToken(tokenList);
-	}
-	if (t.Kind == EOF_)
-	{
-		printf("\nUnexpected end of file");
-		exit(1);
-	} 
-	//else
 	T_type = Parse_Type();
-	VS_type = T_type;
-	while (&t != &currentToken) //maybe will work
-	{
-		t = BackToken(tokenList);
-	}
+	//VS_type = T_type;
 	switch (t.Kind)
 	{
 	case INT_NUM:
 	case ID:
 		t = BackToken(tokenList);
-		Parse_Variables_List(VS_type);
+		Parse_Variables_List();
 		printf("\nDecleration->Variables_List");
 		match(t.Lexeme, ":");
 		printf("\nDecleration->Variables_List->:");
-		// Parse_Type(); in order to solve the problem of inherited from T to VS
-		//t = NextToken(tokenList);
-		while (t.Kind != CMD_SEPERATOR && t.Kind != EOF_)
-		{
-			t = NextToken(tokenList);
-		}
-		if (t.Kind == EOF_)
-		{
-			printf("\nUnexpected end of file");
-			exit(1);
-		}
+		Parse_Type();
+		VS_type = T_type;
+		UpdateTable(currentHashTable, VS_type);
+		t = NextToken(tokenList);
 		printf("\nDecleration->Variables_List->:->Kind");
 		match(t.Lexeme, ";");
 		printf("\nDecleration->Variables_List->:->Kind->;");
@@ -338,8 +321,6 @@ Attribute Parse_Type()
 		
 		break; //End of default case
 	} //End of switch (t.Kind)
-
-	return T_Type;
 }
 
 void Parse_Variables_List(Attribute VS_type)
@@ -359,7 +340,7 @@ void Parse_Variables_List(Attribute VS_type)
 		 if (t.Kind == COMMA)
 		{
 			t = BackToken(tokenList);
-			Parse_Variables_List_T(VS_T_type);
+			Parse_Variables_List_T();
 			printf("Varialbles_List->Variable->,->Variables_List_Tag");
 		}
 		printf("\nVariables_List->Variable->,->Variables_List_Tag->:");
@@ -375,7 +356,7 @@ void Parse_Variables_List(Attribute VS_type)
 				t = NextToken(tokenList);
 			}
 			
-			Parse_Variables_List(VS_T_type);
+			Parse_Variables_List();
 		}
 		else
 		{
@@ -457,16 +438,17 @@ void Parse_Variables_List_T(Attribute VS_T_type)
 	} //End of switch (t.Kind)
 }
 
-void Parse_Variable(Attribute V_type)
+void Parse_Variable()
 {
-	Attribute v;
 	t = NextToken(tokenList);
 	switch (t.Kind)
 	{
-	case INT_NUM:
+	/*case INT_NUM:
 		printf("\nVariable->Number");
-		break; //End of case INT_NUM
+		break; //End of case INT_NUM*/
 	case ID:
+		Insert(currentHashTable, t.key, ERROR);
+		keysForType[INDEX++] = t.key;
 		t = NextToken(tokenList);
 		printf("\nVariable->id");
 		if (t.Kind == COMMA || t.Kind == COLON)
@@ -1085,4 +1067,16 @@ bool MultiMatch(char* tokenString, char* expectedString)
 	}
 
 	return true;
+}
+
+void UpdateTable(Table* hashTable, Attribute type)
+{
+	
+	for (int i = 0; i < INDEX; i++)
+	{
+		TableNode* currentKeyValue = Search(hashTable, keysForType[i]);
+		currentKeyValue->Type = type.type;
+	}
+
+	INDEX = 0;
 }

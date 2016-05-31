@@ -11,6 +11,7 @@ typedef struct Token
 	char Lexeme[50];
 	int LineNumber;
 	bool I_AM_HERE;
+	int key;
 }Token;
 
 typedef struct List_node

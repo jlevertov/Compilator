@@ -1,9 +1,10 @@
-#include<stdio.h>
-#include"header.h"
+#include"HashTable.h"
+
 typedef struct Attribute
 {
-	enum KeyWords type;
+	  enum KeyWords type;
 }Attribute;
+
 void Parse_Program(List* tokenList);
 void Parse_Declerations();
 void Parse_Decleration();
