@@ -1,6 +1,7 @@
 /*lists*/
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #define bool int
 #define true 1
 #define false 0
@@ -77,4 +78,7 @@ enum KeyWords
 	INT_NUM,
 	REAL_NUM,
 	EOF_,
+	ARRAY_OF_INTEGERS,
+	ARRAY_OF_REALS,
+	ARRAY,
 };

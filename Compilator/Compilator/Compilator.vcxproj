@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HashTable.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="Parser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Functions.c" />
+    <ClCompile Include="HashTable.c" />
     <ClCompile Include="Parser.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

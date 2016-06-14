@@ -30,15 +30,20 @@ TableNode *Search(Table* hashTable, int key) {
 	return NULL;
 }
 
-void Insert(Table* hashTable, int key, enum KeyWords data) {
+void Insert(Table* hashTable, int key, enum KeyWords data, char lexeme[]) {
 
 	struct TableNode *item = (struct TableNode*) malloc(sizeof(struct TableNode));
 	item->Type = data;
 	item->key = key;
+	strcpy(item->LexemeOfID, lexeme);
 
 	//get the hash 
 	int hashIndex = hashCode(key);
-
+	if (strcmp(hashTable->hashTable[hashIndex]->LexemeOfID, item->LexemeOfID) == 0)
+	{
+		printf("Veriable %s already exists", lexeme);
+		return;
+	}
 	//move in array until an empty or deleted cell
 	while (hashTable->hashTable[hashIndex] != NULL && hashTable->hashTable[hashIndex]->key != -1) {
 		//go to next cell
