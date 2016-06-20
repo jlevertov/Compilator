@@ -1,9 +1,15 @@
 /*lists*/
+
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #define bool int
 #define true 1
 #define false 0
+
+#ifndef header
+#define header "header.h"
+
 
 typedef struct Token
 {
@@ -11,6 +17,7 @@ typedef struct Token
 	char Lexeme[50];
 	int LineNumber;
 	bool I_AM_HERE;
+	int key;
 }Token;
 
 typedef struct List_node
@@ -76,4 +83,9 @@ enum KeyWords
 	INT_NUM,
 	REAL_NUM,
 	EOF_,
+	ARRAY_OF_INTEGERS,
+	ARRAY_OF_REALS,
+	ARRAY,
 };
+
+#endif
