@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 #include "HashTable.h"
 
+=======
+#include"HashTable.h"
+>>>>>>> origin/master
 
 typedef struct Attribute
 {
@@ -22,4 +26,8 @@ Attribute Parse_Receiver();
 void Parse_Receiver_T(Attribute R_T_type);
 Attribute Parse_Expression();
 Attribute Parse_Expression_T(Attribute E_T_type);
+<<<<<<< HEAD
 void Parse_Condition();
+=======
+void Parse_Condition();
+>>>>>>> origin/master

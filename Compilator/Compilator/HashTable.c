@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 #define _CRT_SECURE_NO_WARNINGS
+=======
+>>>>>>> origin/master
 #include "HashTable.h"
 #define SIZE 1000;
 
@@ -7,11 +10,19 @@
 struct TableNode* dummyItem;
 struct TableNode* item;*/
 
+<<<<<<< HEAD
 int hashCode(int key) {
 	return key % SIZE;
 }
 
 TableNode* Search(Table* hashTable, int key) {
+=======
+int HashCode(int key) {
+	return key % SIZE;
+}
+
+TableNode *Search(Table* hashTable, int key) {
+>>>>>>> origin/master
 	//get the hash 
 	int hashIndex = hashCode(key);
 
@@ -28,6 +39,7 @@ TableNode* Search(Table* hashTable, int key) {
 		hashIndex %= SIZE;
 	}
 
+<<<<<<< HEAD
 	if (hashTable->hashTable[hashIndex] == NULL && hashTable->ParentTable != NULL)
 	{
 		return Search(hashTable->ParentTable, key);
@@ -37,6 +49,12 @@ TableNode* Search(Table* hashTable, int key) {
 }
 
 bool Insert(Table* hashTable, int key, enum KeyWords data, char lexeme[]) {
+=======
+	return NULL;
+}
+
+void Insert(Table* hashTable, int key, enum KeyWords data, char lexeme[]) {
+>>>>>>> origin/master
 
 	struct TableNode *item = (struct TableNode*) malloc(sizeof(struct TableNode));
 	item->Type = data;
@@ -47,7 +65,12 @@ bool Insert(Table* hashTable, int key, enum KeyWords data, char lexeme[]) {
 	int hashIndex = hashCode(key);
 	if (strcmp(hashTable->hashTable[hashIndex]->LexemeOfID, item->LexemeOfID) == 0)
 	{
+<<<<<<< HEAD
 		return false;
+=======
+		printf("Veriable %s already exists", lexeme);
+		return;
+>>>>>>> origin/master
 	}
 	//move in array until an empty or deleted cell
 	while (hashTable->hashTable[hashIndex] != NULL && hashTable->hashTable[hashIndex]->key != -1) {
@@ -59,7 +82,10 @@ bool Insert(Table* hashTable, int key, enum KeyWords data, char lexeme[]) {
 	}
 
 	hashTable->hashTable[hashIndex] = item;
+<<<<<<< HEAD
 	return true;
+=======
+>>>>>>> origin/master
 }
 
 TableNode* Delete(Table* hashTable, TableNode* item) {

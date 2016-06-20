@@ -9,10 +9,13 @@ static List* tokenList;
 static Table* currentHashTable;
 static int keysForType[20];
 static int INDEX = 0;
+<<<<<<< HEAD
 
 void UpdateTable(Table* hashTable, Attribute type);
 bool MultiMatch(Token* gottenToken, Token* expectedToken);
 bool match(Token* gottenToken, Token* expectedToken);
+=======
+>>>>>>> origin/master
 
 void Parse_Program(List* TokenList)
 {
@@ -40,7 +43,11 @@ void Parse_Program(List* TokenList)
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, ";");
 		expectedToken->Kind = CMD_SEPERATOR;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nProgram->Declerations->;");
 		Parse_Statements();
 		printf("\nProgram->Declerations->;->Statemants");
@@ -48,7 +55,11 @@ void Parse_Program(List* TokenList)
 			//t = NextToken(tokenList);
 		strcpy(expectedToken->Lexeme, "end");
 		expectedToken->Kind = END;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		free(expectedToken); //freeing the memory
 		printf("\nProgram->Declerations->;->Statemants->end");
 		if(wasError == true)
@@ -96,7 +107,11 @@ void Parse_Declerations()
 		strcpy(expectedToken->Lexeme, ";");
 		expectedToken->Kind = CMD_SEPERATOR;
 
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nDeclerations->Decleration->;");
 		t = NextToken(tokenList);
 		if (t.Kind == IF || t.Kind == LOOP || t.Kind == START) //Finished Decleration starting Statemants
@@ -161,7 +176,11 @@ void Parse_Declerations()
 
 		}
 
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nDeclerations->;");
 		free(expectedToken);
 		break; //End of cases INT_NUM, ID
@@ -209,14 +228,22 @@ void Parse_Decleration()
 	{
 	case INT_NUM:
 	case ID:
+<<<<<<< HEAD
 		expectedToken = (Token*)malloc(sizeof(Token));
+=======
+		Token* expectedToken = (Token*)malloc(sizeof(Token));
+>>>>>>> origin/master
 		strcpy(expectedToken->Lexeme, ":");
 		expectedToken->Kind = COLON;
 
 		t = BackToken(tokenList);
 		Parse_Variables_List();
 		printf("\nDecleration->Variables_List");
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nDecleration->Variables_List->:");
 		Parse_Type();
 		VS_type = T_type;
@@ -225,7 +252,11 @@ void Parse_Decleration()
 		printf("\nDecleration->Variables_List->:->Kind");
 		strcpy(expectedToken->Lexeme, ";");
 		expectedToken->Kind = CMD_SEPERATOR;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nDecleration->Variables_List->:->Kind->;");
 		free(expectedToken);
 		break; //End of cases INT_NUM, ID
@@ -378,7 +409,11 @@ void Parse_Variables_List()
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, ":");
 		expectedToken->Kind = COLON;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		free(expectedToken);
 		break; //End of cases ID, INT_NUM
 	default:
@@ -473,7 +508,10 @@ void Parse_Variables_List_T()
 
 void Parse_Variable()
 {
+<<<<<<< HEAD
 	bool isSuccess = false;
+=======
+>>>>>>> origin/master
 	t = NextToken(tokenList);
 	switch (t.Kind)
 	{
@@ -481,11 +519,15 @@ void Parse_Variable()
 		printf("\nVariable->Number");
 		break; //End of case INT_NUM*/
 	case ID:
+<<<<<<< HEAD
 		isSuccess = Insert(currentHashTable, t.key, ERROR, t.Lexeme);
 		if (isSuccess != true)
 		{
 			printf("The %s in line %d already exists in the currnet block", t.Lexeme, t.LineNumber);
 		}
+=======
+		Insert(currentHashTable, t.key, ERROR, t.Lexeme);
+>>>>>>> origin/master
 		keysForType[INDEX++] = t.key;
 		t = NextToken(tokenList);
 		printf("\nVariable->id");
@@ -496,7 +538,11 @@ void Parse_Variable()
 		else if (t.Kind == BRACKETS_OPEN)
 		{
 			t = BackToken(tokenList);
+<<<<<<< HEAD
 			TableNode* tn = Search(currentHashTable, t.key);
+=======
+			TableNode *tn = Search(currentHashTable, t.key);
+>>>>>>> origin/master
 			tn->Type = ARRAY;
 			Parse_Variable_T();
 			printf("\nVariable->id->Variable_Tag");
@@ -556,6 +602,7 @@ void Parse_Variable_T()
 
 			TableNode *tn = Search(currentHashTable, t.key);
 
+<<<<<<< HEAD
 			t = NextToken(tokenList);
 			t = NextToken(tokenList); //now at int_num
 			
@@ -566,6 +613,18 @@ void Parse_Variable_T()
 			strcpy(expectedToken->Lexeme, "]");
 			expectedToken->Kind = BRACKETS_CLOSE;
 			match(&t, expectedToken);
+=======
+			t = NextToken(tokenList);
+			t = NextToken(tokenList); //now at int_num
+			
+			tn->sizeOfArray = atoi(t.Lexeme); //The array now has a size;
+
+			t = NextToken(tokenList);
+			Token* expectedToken = (Token*)malloc(sizeof(Token));
+			strcpy(expectedToken->Lexeme, "]");
+			expectedToken->Kind = BRACKETS_CLOSE;
+			match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 			free(expectedToken);
 			printf("Variable_Tag->[Number]");
 		}
@@ -627,7 +686,11 @@ void Parse_Statements()
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, "end");
 		expectedToken->Kind = END;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nStatements->Statemant->end");
 		free(expectedToken);
 		break; //End of cases IF, LOOP, START, ID
@@ -683,7 +746,11 @@ void Parse_Statements_T()
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, "end");
 		expectedToken->Kind = END;
+<<<<<<< HEAD
 		match(&t, expectedToken); 
+=======
+		match(t.Lexeme, expectedToken); 
+>>>>>>> origin/master
 		printf("\nStatements_Tag->Statemants->end");
 		free(expectedToken);
 		break; //End of cases IF, LOOP, START, ID
@@ -726,6 +793,7 @@ void Parse_Statement()
 	Attribute R_Type, E_Type;
 	t = NextToken(tokenList);
 	Token* expectedToken = (Token*)malloc(sizeof(Token));
+<<<<<<< HEAD
 	Table *ht = (Table*)malloc(sizeof(Table));
 	switch (t.Kind)
 	{
@@ -734,16 +802,33 @@ void Parse_Statement()
 		strcpy(expectedToken->Lexeme, "then");
 		expectedToken->Kind = THEN;
 		match(&t, expectedToken);
+=======
+	switch (t.Kind)
+	{
+	case IF:
+		Parse_Condition(tokenList);
+		strcpy(expectedToken->Lexeme, "then");
+		expectedToken->Kind = THEN;
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		
 		Parse_Statement(tokenList);
 		strcpy(expectedToken->Lexeme, "else");
 		expectedToken->Kind = ELSE;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		
 		Parse_Statement(tokenList);
 		strcpy(expectedToken->Lexeme, "end_if");
 		expectedToken->Kind = END_IF;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		
 		t = NextToken(tokenList);
 		printf("\nStatement->if->Condition->then->Statemant->else->Statemant->end_if");
@@ -752,28 +837,49 @@ void Parse_Statement()
 		Parse_Statement(tokenList);
 		strcpy(expectedToken->Lexeme, "until");
 		expectedToken->Kind = UNTIL;
+<<<<<<< HEAD
 		match(&t, expectedToken);
 		
 		Parse_Condition();
 		strcpy(expectedToken->Lexeme, "end_loop");
 		expectedToken->Kind = END_LOOP;
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+		
+		Parse_Condition(tokenList);
+		strcpy(expectedToken->Lexeme, "end_loop");
+		expectedToken->Kind = END_LOOP;
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("\nStatement->loop->Statemant->until->Condition->end_loop");
 		break; //End of case LOOP
 	case START:
 		//Create new Hash table, make her the current
+<<<<<<< HEAD
+=======
+		Table *ht = (Table*)malloc(sizeof(Table));
+>>>>>>> origin/master
 		ht->ParentTable = currentHashTable;
 		currentHashTable = ht;
 
 		Parse_Declerations(tokenList);
 		strcpy(expectedToken->Lexeme, ";");
 		expectedToken->Kind = CMD_SEPERATOR;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		
 		Parse_Statements(tokenList);
 		strcpy(expectedToken->Lexeme, "end");
 		expectedToken->Kind = END;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		
 		printf("\nStatement->Start->Declerations->;->Statemants->end");
 		break; //End of case START
@@ -783,7 +889,11 @@ void Parse_Statement()
 		R_Type = Parse_Receiver();
 		strcpy(expectedToken->Lexeme, "=");
 		expectedToken->Kind = INSERTION;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		E_Type = Parse_Expression();
 		printf("\nStatement->Receiver->=->Expression");
 		
@@ -806,18 +916,30 @@ void Parse_Statement()
 		strcpy(expectedToken5->Lexeme, "until");
 		expectedToken5->Kind = UNTIL;
 		
+<<<<<<< HEAD
 		if (!(MultiMatch(&t, expectedToken) ||
 			MultiMatch(&t, expectedToken2) ||
 			MultiMatch(&t, expectedToken3) ||
 			MultiMatch(&t, expectedToken4) ||
 			MultiMatch(&t, expectedToken5)))
+=======
+		if (!(MultiMatch(t.Lexeme, expectedToken) ||
+			MultiMatch(t.Lexeme, expectedToken2) ||
+			MultiMatch(t.Lexeme, expectedToken3) ||
+			MultiMatch(t.Lexeme, expectedToken4) ||
+			MultiMatch(t.Lexeme, expectedToken5)))
+>>>>>>> origin/master
 		{
 			wasError = true;
 		}
 		
 		if (R_Type.type != E_Type.type)
 		{
+<<<<<<< HEAD
 			printf("\nSemantic Error, type missmatch in line: %d",t.LineNumber);
+=======
+			printf("Semantic Error");
+>>>>>>> origin/master
 		}
 		free(expectedToken);
 		free(expectedToken2);
@@ -862,11 +984,15 @@ void Parse_Statement()
 Attribute Parse_Receiver()
 {
 	Attribute R_Type, R_T_Type;
+<<<<<<< HEAD
 	TableNode *tb;
+=======
+>>>>>>> origin/master
 	t = NextToken(tokenList);
 	switch (t.Kind)
 	{
 	case ID:
+<<<<<<< HEAD
 		tb = Search(currentHashTable, t.key);
 		if (tb == NULL)
 		{
@@ -881,6 +1007,14 @@ Attribute Parse_Receiver()
 		{
 			printf("Semantic Error, ");
 		}*/
+=======
+		TableNode *tb = Search(currentHashTable, t.key);
+		R_Type.type = tb->Type;
+		if (strcmp(tb->LexemeOfID, t.Lexeme) != 0)
+		{
+			printf("Semantic Error");
+		}
+>>>>>>> origin/master
 		
 		t = NextToken(tokenList);
 		printf("\nReceiver->id");
@@ -888,9 +1022,13 @@ Attribute Parse_Receiver()
 		{
 			if (R_Type.type != ARRAY_OF_INTEGERS && R_Type.type != ARRAY_OF_REALS)
 			{
+<<<<<<< HEAD
 				t = BackToken(tokenList);
 				printf("Semantic Error, %s is not difined as an array (line: %d)", t.Lexeme, t.LineNumber);
 				t = NextToken(tokenList);
+=======
+				printf("Semantic Error");
+>>>>>>> origin/master
 				R_T_Type.type = ERROR;
 			}
 			else
@@ -905,7 +1043,11 @@ Attribute Parse_Receiver()
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, "=");
 		expectedToken->Kind = INSERTION;
+<<<<<<< HEAD
 		match(&t, expectedToken);
+=======
+		match(t.Lexeme, expectedToken);
+>>>>>>> origin/master
 		printf("Receiver->id->Receiver_Tag->=");
 		printf("\n|Receiver->id->=");
 		free(expectedToken);
@@ -953,6 +1095,7 @@ void Parse_Receiver_T(Attribute R_T_type)
 	switch (t.Kind)
 	{
 	case BRACKETS_OPEN:
+<<<<<<< HEAD
 		E_Type = Parse_Expression();
 		Token* expectedToken = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken->Lexeme, "]");
@@ -970,6 +1113,19 @@ void Parse_Receiver_T(Attribute R_T_type)
 		if (E_Type.type != INT_NUM)
 		{
 			printf("Semantic Error, the expression is not an integer line: %d",t.LineNumber);
+=======
+		Parse_Expression(tokenList);
+		Token* expectedToken = (Token*)malloc(sizeof(Token));
+		strcpy(expectedToken->Lexeme, "]");
+		expectedToken->Kind = BRACKETS_CLOSE;
+		match(t.Lexeme, expectedToken);
+		printf("\nReceiver_Tag->[->Expression->]");
+		free(expectedToken);
+		if ((R_T_type.type != ARRAY_OF_INTEGERS || R_T_type.type != ARRAY_OF_REALS)
+			&& E_Type.type != INT_NUM)
+		{
+			printf("Semantic Error");
+>>>>>>> origin/master
 		}
 		break; //End of case BRACKETS_OPEN
 	default:
@@ -1008,7 +1164,10 @@ void Parse_Receiver_T(Attribute R_T_type)
 Attribute Parse_Expression()
 {
 	Attribute E_Type, E_T_Type;
+<<<<<<< HEAD
 	TableNode *tb = Search(currentHashTable, t.key);
+=======
+>>>>>>> origin/master
 	t = NextToken(tokenList);
 	switch (t.Kind)
 	{
@@ -1026,6 +1185,7 @@ Attribute Parse_Expression()
 		printf("\nExpression->number");
 		break; //End of case INT_NUM, REAL_NUM
 	case ID:
+<<<<<<< HEAD
 		tb = Search(currentHashTable, t.key);
 		if (tb == NULL)
 		{
@@ -1043,6 +1203,17 @@ Attribute Parse_Expression()
 			E_T_Type.type = ERROR;
 			E_Type.type = ERROR;
 		}*/						          
+=======
+		TableNode *tb = Search(currentHashTable, t.key);
+		E_Type.type = tb->Type;
+		E_T_Type.type = E_Type.type;
+		if (strcmp(t.Lexeme, tb->LexemeOfID) != 0)
+		{
+			printf("Semantic Error");
+			E_T_Type.type = ERROR;
+			E_Type.type = ERROR;
+		}
+>>>>>>> origin/master
 		t = NextToken(tokenList);
 		if (t.Kind == BRACKETS_OPEN ||
 			t.Kind == ADD_OP ||
@@ -1055,7 +1226,11 @@ Attribute Parse_Expression()
 				if (!(E_Type.type == REAL_NUM && E_T_Type.type == INT_NUM)
 					|| E_T_Type.type == ERROR || E_Type.type == ERROR)
 				{
+<<<<<<< HEAD
 					printf("\nSemantic Error, type missmatch in line: %d.",t.LineNumber);
+=======
+					printf("Semantic Error");
+>>>>>>> origin/master
 					E_Type.type = ERROR;
 				}
 				else if (E_Type.type == REAL_NUM && E_T_Type.type == INT_NUM)
@@ -1128,6 +1303,7 @@ Attribute Parse_Expression()
 	Token* expectedToken7 = (Token*)malloc(sizeof(Token));
 	strcpy(expectedToken7->Lexeme, "then");
 	expectedToken7->Kind = THEN;
+<<<<<<< HEAD
 
 	Token* expectedToken8 = (Token*)malloc(sizeof(Token));
 	strcpy(expectedToken8->Lexeme, ";");
@@ -1153,10 +1329,38 @@ Attribute Parse_Expression()
 	strcpy(expectedToken13->Lexeme, "<=");
 	expectedToken13->Kind = SMALLER_THAN_EQUALS;
 
+=======
+
+	Token* expectedToken8 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken8->Lexeme, ";");
+	expectedToken8->Kind = CMD_SEPERATOR;
+
+	Token* expectedToken9 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken9->Lexeme, "end_if");
+	expectedToken9->Kind = END_IF;
+
+	Token* expectedToken10 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken10->Lexeme, "until");
+	expectedToken10->Kind = UNTIL;
+
+	Token* expectedToken11 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken11->Lexeme, ">");
+	expectedToken11->Kind = BIGGER_THAN;
+
+	Token* expectedToken12 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken12->Lexeme, "<");
+	expectedToken12->Kind = SMALLER_THAN;
+
+	Token* expectedToken13 = (Token*)malloc(sizeof(Token));
+	strcpy(expectedToken13->Lexeme, "<=");
+	expectedToken13->Kind = SMALLER_THAN_EQUALS;
+
+>>>>>>> origin/master
 	Token* expectedToken14 = (Token*)malloc(sizeof(Token));
 	strcpy(expectedToken14->Lexeme, "!=");
 	expectedToken14->Kind = NOT_EQUALS;
 	
+<<<<<<< HEAD
 	if (!(MultiMatch(&t, expectedToken1) ||
 		MultiMatch(&t, expectedToken2) ||
 		MultiMatch(&t, expectedToken3) ||
@@ -1171,6 +1375,22 @@ Attribute Parse_Expression()
 		MultiMatch(&t, expectedToken12) ||
 		MultiMatch(&t, expectedToken13) ||
 		MultiMatch(&t, expectedToken14))) //if all are false
+=======
+	if (!(MultiMatch(t.Lexeme, expectedToken1) ||
+		MultiMatch(t.Lexeme, expectedToken2) ||
+		MultiMatch(t.Lexeme, expectedToken3) ||
+		MultiMatch(t.Lexeme, expectedToken4) ||
+		MultiMatch(t.Lexeme, expectedToken5) ||
+		MultiMatch(t.Lexeme, expectedToken6) ||
+		MultiMatch(t.Lexeme, expectedToken7)	||
+		MultiMatch(t.Lexeme, expectedToken8) ||
+		MultiMatch(t.Lexeme, expectedToken9) ||
+		MultiMatch(t.Lexeme, expectedToken10) ||
+		MultiMatch(t.Lexeme, expectedToken11) ||
+		MultiMatch(t.Lexeme, expectedToken12) ||
+		MultiMatch(t.Lexeme, expectedToken13) ||
+		MultiMatch(t.Lexeme, expectedToken14))) //if all are false
+>>>>>>> origin/master
 	{
 		wasError = true;
 	}
@@ -1201,6 +1421,7 @@ Attribute Parse_Expression_T(Attribute E_T_type)
 	switch (t.Kind)
 	{
 	case BRACKETS_OPEN:
+<<<<<<< HEAD
 		E_Type = Parse_Expression();
 		strcpy(expectedToken->Lexeme, "]");
 		expectedToken->Kind = BRACKETS_CLOSE;
@@ -1216,13 +1437,28 @@ Attribute Parse_Expression_T(Attribute E_T_type)
 		if (E_Type.type != INT_NUM)
 		{
 			printf("Semantic Error, the expression is not an integer line: %d", t.LineNumber);
+=======
+		E_Type = Parse_Expression(tokenList);
+		strcpy(expectedToken->Lexeme, "]");
+		expectedToken->Kind = BRACKETS_CLOSE;
+		match(t.Lexeme, expectedToken);
+		printf("\nExpression_Tag->[->Expression->]");
+		if ((E_T_type.type != ARRAY_OF_INTEGERS || E_T_type.type != ARRAY_OF_REALS) &&
+			E_Type.type != INT_NUM)
+		{
+			printf("Semantic Error");
+>>>>>>> origin/master
 			E_T_type.type = ERROR;
 		}
 		free(expectedToken);
 		break; //End of case BRACKETS_OPEN
 	case ADD_OP:
 	case MUL_OP:
+<<<<<<< HEAD
 		E_Type = Parse_Expression();
+=======
+		E_Type = Parse_Expression(tokenList);
+>>>>>>> origin/master
 		Token* expectedToken1 = (Token*)malloc(sizeof(Token));
 		strcpy(expectedToken1->Lexeme, "]");
 		expectedToken1->Kind = BRACKETS_CLOSE;
@@ -1275,6 +1511,7 @@ Attribute Parse_Expression_T(Attribute E_T_type)
 		strcpy(expectedToken14->Lexeme, "!=");
 		expectedToken14->Kind = NOT_EQUALS;
 		printf("\nExpression_Tag->+|*->Expression");
+<<<<<<< HEAD
 		if (!(MultiMatch(&t, expectedToken1) ||
 			MultiMatch(&t, expectedToken2) ||
 			MultiMatch(&t, expectedToken3) ||
@@ -1288,6 +1525,21 @@ Attribute Parse_Expression_T(Attribute E_T_type)
 			MultiMatch(&t, expectedToken12) ||
 			MultiMatch(&t, expectedToken13) ||
 			MultiMatch(&t, expectedToken14))) //if all are false
+=======
+		if (!(MultiMatch(t.Lexeme, expectedToken1) ||
+			MultiMatch(t.Lexeme, expectedToken2) ||
+			MultiMatch(t.Lexeme, expectedToken3) ||
+			MultiMatch(t.Lexeme, expectedToken4) ||
+			MultiMatch(t.Lexeme, expectedToken5) ||
+			MultiMatch(t.Lexeme, expectedToken6) ||
+			MultiMatch(t.Lexeme, expectedToken8) ||
+			MultiMatch(t.Lexeme, expectedToken9) ||
+			MultiMatch(t.Lexeme, expectedToken10) ||
+			MultiMatch(t.Lexeme, expectedToken11) ||
+			MultiMatch(t.Lexeme, expectedToken12) ||
+			MultiMatch(t.Lexeme, expectedToken13) ||
+			MultiMatch(t.Lexeme, expectedToken14))) //if all are false
+>>>>>>> origin/master
 		{
 			wasError = true;
 		}
@@ -1297,7 +1549,11 @@ Attribute Parse_Expression_T(Attribute E_T_type)
 			if (!(E_T_type.type == REAL_NUM && E_Type.type == INT_NUM)
 				|| E_T_type.type == ERROR || E_Type.type == ERROR)
 			{
+<<<<<<< HEAD
 				printf("Semantic Error, type missmatch line: %d", t.LineNumber);
+=======
+				printf("Semantic Error");
+>>>>>>> origin/master
 				E_T_type.type = ERROR;
 			}
 			else if (E_T_type.type == REAL_NUM && E_Type.type == INT_NUM)
@@ -1398,6 +1654,7 @@ void Parse_Condition()
 		expectedToken8->Kind = THEN;
 
 		E_L_Type = Parse_Expression();
+<<<<<<< HEAD
 		if (MultiMatch(&t, expectedToken1) ||
 			MultiMatch(&t, expectedToken2) ||
 			MultiMatch(&t, expectedToken3) ||
@@ -1408,6 +1665,18 @@ void Parse_Condition()
 			E_R_Type = Parse_Expression();
 			if (!(MultiMatch(&t, expectedToken7) ||
 				MultiMatch(&t, expectedToken8)))
+=======
+		if (MultiMatch(t.Lexeme, expectedToken1) ||
+			MultiMatch(t.Lexeme, expectedToken2) ||
+			MultiMatch(t.Lexeme, expectedToken3) ||
+			MultiMatch(t.Lexeme, expectedToken4) ||
+			MultiMatch(t.Lexeme, expectedToken5) ||
+			MultiMatch(t.Lexeme, expectedToken6))
+		{
+			E_R_Type = Parse_Expression();
+			if (!(MultiMatch(t.Lexeme, expectedToken7) ||
+				MultiMatch(t.Lexeme, expectedToken8)))
+>>>>>>> origin/master
 			{
 				printf("\n-----------------\nParser Error at %s, expected end_loop or then, line %d", t.Lexeme, t.LineNumber);
 				wasError = true;
@@ -1417,7 +1686,11 @@ void Parse_Condition()
 
 			if (E_L_Type.type != E_R_Type.type)
 			{
+<<<<<<< HEAD
 				printf("Semantic Error, type missmatch line: %d",t.LineNumber);
+=======
+				printf("Semantic Error");
+>>>>>>> origin/master
 			}
 		}
 		else
